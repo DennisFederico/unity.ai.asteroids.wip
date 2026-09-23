@@ -1,0 +1,50 @@
+{
+  "mcpServers": {
+    "anklebreaker-unity-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "anklebreaker-unity-mcp@latest"
+      ],
+      "disabled": false,
+      "env": {
+        "UNITY_BRIDGE_PORT": "7890",
+        "UNITY_HUB_PATH": "C:\\Program Files\\Unity Hub\\Unity Hub.exe"
+      }
+    },
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp",
+        "--api-key",
+        "ctx7sk-d57b46f8-1151-4aeb-8ce4-9fb26885f22a"
+      ],
+      "env": {
+        "DEFAULT_MINIMUM_TOKENS": ""
+      },
+      "alwaysAllow": [
+        "query-docs"
+      ]
+    },
+    "ddg-websearch": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "duckduckgo-mcp-server"
+      ],
+      "env": {
+        "DDG_REGION": "en-eu",
+        "DDG_SAFE_SEARCH": "STRICT"
+      }
+    },
+    "kiso-okf": {
+      "type": "streamable-http",
+      "url": "http://localhost:61080/mcp",
+      "alwaysAllow": [
+        "search_concepts",
+        "get_concept_content"
+      ]
+    }
+  }
+}

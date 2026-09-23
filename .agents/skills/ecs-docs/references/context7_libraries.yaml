@@ -1,0 +1,29 @@
+version: "1.0"
+policy:
+  bannedTools:
+    - "resolve-library-id"
+  allowedTools:
+    - "query-docs"
+  directive: "Always call query-docs directly using one of the pre-approved libraryId values below. NEVER call resolve-library-id."
+
+libraries:
+  - libraryId: "/websites/unity3d_packages_com_unity_entities_6_5_manual"
+    name: "Unity Entities 6.5 Manual"
+    useWhen: "Architecture design, system concepts, Subscenes, Baker workflows, EntityCommandBuffer lifecycles, and TransformUsageFlags."
+    targetPackage: "com.unity.entities 1.4+ (Unity 6.6)"
+
+  - libraryId: "/websites/unity3d_packages_com_unity_entities_1_4"
+    name: "Unity Entities 1.4 API Reference"
+    useWhen: "Exact C# struct definitions, method signatures, query filter syntax (WithAll, WithNone, RefRO, RefRW), and compiler error diagnostics."
+    targetPackage: "com.unity.entities 1.4+ API"
+
+  - libraryId: "/websites/unity3d_packages_com_unity_netcode_1_9"
+    name: "Unity Netcode for Entities 1.9"
+    useWhen: "Multiplayer ECS architecture, client-server prediction, ghost snapshot interpolation, network RPCs, and server-authoritative state."
+    targetPackage: "com.unity.netcode 1.9+"
+
+  - libraryId: "/websites/unity3d_packages_com_unity_netcode_gameobjects_2_11"
+    name: "Unity Netcode for GameObjects 2.11"
+    useWhen: "Hybrid multiplayer, NetworkBehaviour, NetworkManager, and managed GameObject networking bridges."
+    targetPackage: "com.unity.netcode.gameobjects 2.11+"
+
