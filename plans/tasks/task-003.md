@@ -5,8 +5,7 @@
 **Reviewer:** Reviewer Persona  
 **Target Entities Version:** Unity Entities 1.4+ (Unity 6.6)  
 
----
-
+---\n
 ## Section 1: Objective & Scope
 * **Objective:** Implement the laser weapon firing, high-velocity linear movement, and lifetime expiration pipeline using `BeginSimulationEntityCommandBufferSystem.Singleton` for record-and-forget deferred instantiation and destruction.
 * **In Scope:**
@@ -240,6 +239,21 @@ namespace Asteroids.Core
 }
 ```
 
+### Visual & Scene Rigging Contracts
+*(Defines how the entity and its prefab are assembled)*
+* **Target Scope**: Prefab Library / `SubScene` (`Assets/Scenes/Asteroids_entities.unity`)
+* **Entity Visual Type**:
+  - [x] **Visual Entity (Prefab-Backed)**:
+    - **Visual Prefab Asset Path**: `Assets/ThirdParty/Synty/PolygonSciFiCity/Prefabs/FX/FX_Laser_Bullet_01.prefab`
+    - **Rigging Mode**: `Prefab Asset (Dynamic ECB Instantiation)`
+    - **Initial Transform**: Spawned dynamically at ship muzzle position facing ship orientation on $Y=0$.
+    - **Authoring Component**: `LaserAuthoring` attached directly to `FX_Laser_Bullet_01.prefab`.
+  - [ ] **Pure Data / Non-Visual Entity (Explicitly Empty)**:
+* **SubScene Wiring Reference**:
+  - **Host GameObject**: `PlayerShip` in `Asteroids_entities.unity`
+  - **Component**: `PlayerAuthoring`
+  - **Serialized Field**: `LaserPrefab` -> `Assets/ThirdParty/Synty/PolygonSciFiCity/Prefabs/FX/FX_Laser_Bullet_01.prefab`
+
 ---
 
 ## Section 3: Injected OKF Patterns & Anti-Pattern Warnings
@@ -260,6 +274,7 @@ namespace Asteroids.Core
 ## Section 4: Developer Definition of Done (DoD)
 - [ ] Code implemented strictly within Section 2 target paths.
 - [ ] `PlayerAuthoring.cs` extended with `LaserPrefab`, `FireRate`, `MuzzleOffset` fields and `LaserSpawner` component baking.
+- [ ] `LaserAuthoring` attached to `FX_Laser_Bullet_01.prefab`.
 - [ ] Clean compilation verified via Unity MCP (`unity_get_compilation_errors` = **0 errors**).
 - [ ] Zero Burst compiler warnings.
 
@@ -269,6 +284,7 @@ namespace Asteroids.Core
 - [ ] **ECB Safety**: Zero calls to `.Playback()` or `.Dispose()`.
 - [ ] **Burst Compilation**: `LaserShootingSystem`, `LaserMovementSystem`, and `LaserLifetimeSystem` all have `[BurstCompile]`.
 - [ ] **Execution Group**: All systems update in `SimulationSystemGroup`.
+- [ ] **Visual & Rigging Audit**: Verified `FX_Laser_Bullet_01.prefab` has `LaserAuthoring` attached and `TransformUsageFlags.Dynamic` baked.
 
 ---
 
@@ -279,3 +295,11 @@ namespace Asteroids.Core
 - [ ] Step 4: Implement `LaserAuthoring.cs` in `Assets/Scripts/Authoring/`.
 - [ ] Step 5: Update `PlayerAuthoring.cs` to bake `LaserSpawner`.
 - [ ] Step 6: Verify clean compilation and 0 Burst warnings via `anklebreaker-unity-mcp`.
+
+---
+
+## Reviewer Sign-off & Verdict
+* **Review Date:** `YYYY-MM-DD`
+* **Verdict:** `PENDING`
+* **Findings:**
+  * [Notes or verification logs here]

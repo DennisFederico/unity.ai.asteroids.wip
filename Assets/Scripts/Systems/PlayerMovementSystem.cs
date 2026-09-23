@@ -7,8 +7,11 @@ namespace Asteroids.Core
 
     /// <summary>
     /// Burst-compiled unmanaged ISystem that applies ship movement physics
-    /// on the isometric XZ plane (Y=0). Reads exclusively from PlayerInput
-    /// component data — no managed Input System calls.
+    /// on the isometric XZ plane (Y=0). The input vector is interpreted relative
+    /// to the ship's orientation: forward/back becomes thrust along the ship's nose,
+    /// left/right becomes strafe (slide). The ship's aim (rotation) always follows
+    /// the cursor, while the velocity persists independently (inertial drift).
+    /// No drag is applied — the ship continues drifting until thrust changes it.
     /// </summary>
     [BurstCompile]
     [UpdateInGroup(typeof(SimulationSystemGroup))]
@@ -29,42 +32,54 @@ namespace Asteroids.Core
                 SystemAPI.Query<RefRW<LocalTransform>, RefRW<PlayerMovementData>, RefRO<PlayerInput>>()
                          .WithAll<PlayerTag>())
             {
-                // 1. Acceleration along XZ plane
-                float3 inputDir = new float3(input.ValueRO.Movement.x, 0f, input.ValueRO.Movement.y);
-                if (math.lengthsq(inputDir) > 0.001f)
+                // 1. Compute target yaw towards AimWorldPosition (cursor)
+                float3 toTarget = input.ValueRO.AimWorldPosition - transform.ValueRO.Position;
+                toTarget.y = 0f;
+
+                quaternion targetRot = quaternion.identity;
+                if (math.lengthsq(toTarget) > 0.01f)
                 {
-                    inputDir = math.normalize(inputDir);
-                    moveData.ValueRW.CurrentVelocity += inputDir * (moveData.ValueRO.ThrustAcceleration * dt);
+                    float targetAngle = math.atan2(toTarget.x, toTarget.z);
+                    targetRot = quaternion.RotateY(targetAngle);
                 }
 
-                // 2. Apply linear drag damping
-                moveData.ValueRW.CurrentVelocity *= math.max(0f, 1f - (moveData.ValueRO.Drag * dt));
+                // 2. Smoothly rotate yaw towards target (ship's aim always follows cursor)
+                quaternion newRotation = math.slerp(
+                    transform.ValueRO.Rotation,
+                    targetRot,
+                    math.saturate(moveData.ValueRO.RotationDamping * dt)
+                );
+                transform.ValueRW.Rotation = newRotation;
 
-                // 3. Clamp top speed
+                // 3. Apply thrust along ship's aim vectors (ship-relative)
+                // Input.y → thrust along ship's nose (forward/back)
+                // Input.x → strafe along ship's right (left/right)
+                float2 inputMovement = input.ValueRO.Movement;
+                if (math.lengthsq(inputMovement) > 0.001f)
+                {
+                    // Get ship's forward and right vectors in world space (constrained to XZ plane)
+                    float3 shipForward = math.forward(newRotation);
+                    shipForward.y = 0f;
+                    shipForward = math.normalizesafe(shipForward);
+
+                    float3 shipRight = math.normalize(math.cross(new float3(0f, 1f, 0f), shipForward));
+
+                    // Apply thrust directly from input, using ship-relative vectors
+                    float3 thrustWorld = shipForward * inputMovement.y + shipRight * inputMovement.x;
+                    moveData.ValueRW.CurrentVelocity += thrustWorld * moveData.ValueRO.ThrustAcceleration * dt;
+                }
+
+                // 4. Clamp top speed (no drag — ship drifts in space!)
                 float currentSpeed = math.length(moveData.ValueRO.CurrentVelocity);
                 if (currentSpeed > moveData.ValueRO.MaxSpeed)
                 {
                     moveData.ValueRW.CurrentVelocity = (moveData.ValueRO.CurrentVelocity / currentSpeed) * moveData.ValueRO.MaxSpeed;
                 }
 
-                // 4. Translate position (constrained to Y = 0)
+                // 5. Translate position (constrained to Y = 0)
                 float3 newPos = transform.ValueRO.Position + (moveData.ValueRO.CurrentVelocity * dt);
                 newPos.y = 0f;
                 transform.ValueRW.Position = newPos;
-
-                // 5. Smoothly rotate yaw towards AimWorldPosition
-                float3 toTarget = input.ValueRO.AimWorldPosition - transform.ValueRO.Position;
-                toTarget.y = 0f;
-                if (math.lengthsq(toTarget) > 0.01f)
-                {
-                    float targetAngle = math.atan2(toTarget.x, toTarget.z);
-                    quaternion targetRot = quaternion.RotateY(targetAngle);
-                    transform.ValueRW.Rotation = math.slerp(
-                        transform.ValueRO.Rotation,
-                        targetRot,
-                        math.saturate(moveData.ValueRO.RotationDamping * dt)
-                    );
-                }
             }
         }
     }

@@ -5,8 +5,7 @@
 **Reviewer:** Reviewer Persona  
 **Target Entities Version:** Unity Entities 1.4+ (Unity 6.6)  
 
----
-
+---\n
 ## Section 1: Objective & Scope
 * **Objective:** Implement the infinite map culling and isometric camera tracking systems, establishing the configurable player-centric despawn bubble ($50\times$ the area of the spawn zone) and destroying out-of-bounds asteroids via `BeginSimulationEntityCommandBufferSystem.Singleton`.
 * **In Scope:**
@@ -150,7 +149,7 @@ namespace Asteroids.Core
 }
 ```
 
-### Authoring & Baker
+### Authoring & Baker (`InfiniteMapAuthoring.cs`)
 ```csharp
 namespace Asteroids.Core
 {
@@ -195,6 +194,19 @@ namespace Asteroids.Core
 }
 ```
 
+### Visual & Scene Rigging Contracts
+*(Defines how the entity is assembled in the SubScene)*
+* **Target Scope**: `SubScene` (`Assets/Scenes/Asteroids_entities.unity`)
+* **Entity Visual Type**:
+  - [ ] **Visual Entity (Prefab-Backed)**:
+  - [x] **Pure Data / Non-Visual Entity (Explicitly Empty)**:
+    - **Entity Name**: `InfiniteMapManager`
+    - **Entity Purpose**: Singleton configuration provider for infinite map spawn buffer and out-of-bounds culling bubble ($50\times$ area).
+    - **Mesh Requirement**: `None (Primitive Empty GameObject)`
+    - **Rationale**: `InfiniteMapConfig` is a pure unmanaged configuration struct baked with `TransformUsageFlags.None`. It contains no runtime geometry, renderers, or physics colliders.
+* **Main Scene Bridge**:
+  - `CameraFollowBridgeSystem` operates in `Scope 1: Main Scene` (`Assets/Scenes/Asteroids.unity`), smoothly adjusting `Camera.main` to follow the player entity's `LocalToWorld` coordinate.
+
 ---
 
 ## Section 3: Injected OKF Patterns & Anti-Pattern Warnings
@@ -224,6 +236,7 @@ namespace Asteroids.Core
 - [ ] **Data Footprint**: `InfiniteMapAuthoring` uses `TransformUsageFlags.None`.
 - [ ] **Burst Compliance**: `AsteroidCullingSystem` is fully Burst-compiled.
 - [ ] **Camera Tracking**: Isometric camera follows player smoothly in infinite space without jitter.
+- [ ] **Visual & Rigging Audit**: Verified `InfiniteMapManager` is an explicit Primitive Empty GameObject in `SubScene` with `TransformUsageFlags.None`.
 
 ---
 
@@ -233,3 +246,11 @@ namespace Asteroids.Core
 - [x] Step 3: Implement `CameraFollowBridgeSystem.cs` in `Assets/Scripts/Systems/`.
 - [x] Step 4: Implement `InfiniteMapAuthoring.cs` in `Assets/Scripts/Authoring/`.
 - [x] Step 5: Verify clean compilation and 0 Burst warnings via `anklebreaker-unity-mcp`.
+
+---
+
+## Reviewer Sign-off & Verdict
+* **Review Date:** `YYYY-MM-DD`
+* **Verdict:** `PENDING`
+* **Findings:**
+  * [Notes or verification logs here]

@@ -5,8 +5,7 @@
 **Reviewer:** Reviewer Persona  
 **Target Entities Version:** Unity Entities 1.4+ (Unity 6.6)  
 
----
-
+---\n
 ## Section 1: Objective & Scope
 * **Objective:** Implement the 3D aiming crosshair reticle tracking system that positions `SM_Wep_Crosshair_04` directly at `PlayerInput.AimWorldPosition` on the isometric $XZ$ plane ($Y=0.05f$) with zero GC allocation.
 * **In Scope:**
@@ -95,14 +94,24 @@ namespace Asteroids.Core
 }
 ```
 
+### Visual & Scene Rigging Contracts
+*(Defines how the reticle entity is assembled in the SubScene)*
+* **Target Scope**: `SubScene` (`Assets/Scenes/Asteroids_entities.unity`)
+* **Entity Visual Type**:
+  - [x] **Visual Entity (Prefab-Backed)**:
+    - **Visual Prefab Asset Path**: `Assets/ThirdParty/Synty/PolygonSciFiCity/Prefabs/Weapons/SM_Wep_Crosshair_04.prefab`
+    - **Rigging Mode**: `Prefab Instance (Root)`
+    - **Initial Transform**: Position `(0, 0.05, 0)`, Rotation `(0, 0, 0)`, Scale `(1, 1, 1)`
+    - **Authoring Component**: `ReticleAuthoring` attached to `AimCrosshair` instance in `Asteroids_entities.unity`
+  - [ ] **Pure Data / Non-Visual Entity (Explicitly Empty)**:
+
 ---
 
 ## Section 3: Injected OKF Patterns & Anti-Pattern Warnings
 
 ### Injected OKF Pattern: `singletons` & `baking`
 *Source: `concepts/singletons.md`, `concepts/baking.md`*
-* **Dynamic Reticle**: Reticle moves every frame with mouse movements; bake with `TransformUsageFlags.Dynamic`.
-* **Guard Checks**: `state.RequireForUpdate<CrosshairReticleTag>()` and `state.RequireForUpdate<PlayerInput>()` prevent updating if either entity is missing.
+* **Dynamic Reticle**: Reticle moves every frame with mouse movements; bake with `TransformUsageFlags.Dynamic`.\n* **Guard Checks**: `state.RequireForUpdate<CrosshairReticleTag>()` and `state.RequireForUpdate<PlayerInput>()` prevent updating if either entity is missing.
 
 ### Anti-Pattern Warnings
 * ⛔ **DO NOT USE `IAspect`**: Direct query via `SystemAPI.Query<RefRW<LocalTransform>>().WithAll<CrosshairReticleTag>()`.
@@ -112,14 +121,14 @@ namespace Asteroids.Core
 
 ## Section 4: Developer Definition of Done (DoD)
 - [x] Code implemented strictly within Section 2 target paths.
-- [x] Clean compilation verified via Unity MCP (`unity_get_compilation_errors` = **0 errors**).
-- [x] Zero Burst compiler warnings.
+- [x] Clean compilation verified via Unity MCP (`unity_get_compilation_errors` = **0 errors**).\n- [x] Zero Burst compiler warnings.
 
 ---
 
 ## Section 5: Reviewer Runtime & Style Checklist
 - [ ] **Burst Compilation**: Struct and methods annotated with `[BurstCompile]`.
 - [ ] **Single Responsibility**: System only updates transform position from `PlayerInput.AimWorldPosition`.
+- [ ] **Visual & Rigging Audit**: Verified `SM_Wep_Crosshair_04.prefab` is instantiated in `Asteroids_entities.unity` with `ReticleAuthoring` and `TransformUsageFlags.Dynamic`.
 
 ---
 
@@ -128,3 +137,11 @@ namespace Asteroids.Core
 - [x] Step 2: Implement `ReticleTrackingSystem.cs` in `Assets/Scripts/Systems/`.
 - [x] Step 3: Implement `ReticleAuthoring.cs` in `Assets/Scripts/Authoring/`.
 - [x] Step 4: Verify clean compilation and 0 Burst warnings via `anklebreaker-unity-mcp`.
+
+---
+
+## Reviewer Sign-off & Verdict
+* **Review Date:** `YYYY-MM-DD`
+* **Verdict:** `PENDING`
+* **Findings:**
+  * [Notes or verification logs here]

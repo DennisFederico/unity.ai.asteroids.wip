@@ -42,12 +42,13 @@ Operate strictly as our **Lead Systems Architect** (`personas/architect.md`) adh
    - Component data structures (blittable unmanaged structs, singleton configurations).
    - EntityCommandBuffer lifecycle strategy (record-and-forget; deferral to `BeginSimulationEntityCommandBufferSystem.Singleton`).
    - Hybrid bridges for managed GameObjects (uGUI UI, companion audio/VFX).
+   - **Visual Asset & Prefab Registry**: Centralized table recording all 3D models, prefabs, and VFX from Section 2 of this prompt, mapping each asset to its assigned Task ID, entity name, and authoring mode. Never drop visual asset paths during plan synthesis.
    - Milestone sequence of short, low-effort atomic tasks (`tasks/task-001.md`, `tasks/task-002.md`, etc.).
 
 #### Step 3: Author Initial Task Contract (`tasks/task-001.md`)
 Using `templates/task-contract-template.md`, generate the complete 5-section contract for Task 1:
 * **Section 1**: Single responsibility scope (what is IN scope, what is explicitly OUT of scope).
-* **Section 2**: Exact type signatures, namespaces, struct definitions, field types, and target paths (`Assets/Scripts/...`).
+* **Section 2**: Exact type signatures, namespaces, struct definitions, field types, target paths (`Assets/Scripts/...`), and **Visual & Scene Rigging Contracts** (explicitly assign the visual prefab asset path OR explicitly designate the entity as `Pure Data / Non-Visual Entity` with rationale).
 * **Section 3**: Injected verbatim OKF code snippets and mandatory anti-pattern warnings:
   - ⛔ DO NOT USE `IAspect` (marked `[Obsolete]` in Entities 1.4+).
   - ⛔ NO GC IN BURST (no `new`, `string`, or LINQ in `ISystem` or jobs).

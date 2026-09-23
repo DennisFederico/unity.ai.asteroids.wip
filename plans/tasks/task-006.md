@@ -5,8 +5,7 @@
 **Reviewer:** Reviewer Persona  
 **Target Entities Version:** Unity Entities 1.4+ (Unity 6.6)  
 
----
-
+---\n
 ## Section 1: Objective & Scope
 * **Objective:** Implement the Burst-compiled collision detection system that performs bounding sphere intersection tests between lasers and asteroids, destroys the colliding laser, splits multi-tier asteroids into fragments via `BeginSimulationEntityCommandBufferSystem.Singleton`, and increments the `GameScore` singleton.
 * **In Scope:**
@@ -110,8 +109,7 @@ namespace Asteroids.Core
             var destroyedLasers = new NativeParallelHashSet<Entity>(laserCount, Allocator.Temp);
             var destroyedAsteroids = new NativeParallelHashSet<Entity>(asteroidCount, Allocator.Temp);
 
-            for (int l = 0; l < laserCount; l++)
-            {
+            for (int l = 0; l < laserCount; l++)\n            {
                 Entity laserEntity = laserEntities[l];
                 float3 laserPos = laserTransforms[l].Position;
                 float laserRadius = laserProjectiles[l].Radius;
@@ -203,6 +201,17 @@ namespace Asteroids.Core
 }
 ```
 
+### Visual & Scene Rigging Contracts
+*(Defines how the entity is assembled in the SubScene)*
+* **Target Scope**: `SubScene` (`Assets/Scenes/Asteroids_entities.unity`)
+* **Entity Visual Type**:
+  - [ ] **Visual Entity (Prefab-Backed)**:
+  - [x] **Pure Data / Non-Visual Entity (Explicitly Empty)**:
+    - **Entity Name**: `ScoreManager`
+    - **Entity Purpose**: Singleton entity storing active game score.
+    - **Mesh Requirement**: `None (Primitive Empty GameObject)`
+    - **Rationale**: `GameScore` is a pure unmanaged data component baked with `TransformUsageFlags.None`. Visual rendering is delegated to the uGUI Canvas companion in `task-007`.
+
 ---
 
 ## Section 3: Injected OKF Patterns & Anti-Pattern Warnings
@@ -230,6 +239,7 @@ namespace Asteroids.Core
 - [ ] **Burst Compilation**: `LaserAsteroidCollisionSystem` is fully Burst-compiled.
 - [ ] **Memory Hygiene**: All `NativeArray` and `NativeParallelHashSet` instances are scoped in `using` blocks.
 - [ ] **Score Propagation**: `GameScore` singleton is mutated directly via `SystemAPI.GetSingletonRW`.
+- [ ] **Visual & Rigging Audit**: Verified `ScoreManager` is an explicit Primitive Empty GameObject in `SubScene` baking `TransformUsageFlags.None`.
 
 ---
 
@@ -238,3 +248,11 @@ namespace Asteroids.Core
 - [ ] Step 2: Implement `LaserAsteroidCollisionSystem.cs` in `Assets/Scripts/Systems/`.
 - [ ] Step 3: Implement `GameScoreAuthoring.cs` in `Assets/Scripts/Authoring/`.
 - [ ] Step 4: Verify clean compilation and 0 Burst warnings via `anklebreaker-unity-mcp`.
+
+---
+
+## Reviewer Sign-off & Verdict
+* **Review Date:** `YYYY-MM-DD`
+* **Verdict:** `PENDING`
+* **Findings:**
+  * [Notes or verification logs here]

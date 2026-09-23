@@ -5,8 +5,7 @@
 **Reviewer:** Reviewer Persona  
 **Target Entities Version:** Unity Entities 1.4+ (Unity 6.6)  
 
----
-
+---\n
 ## Section 1: Objective & Scope
 * **Objective:** Bridge the unmanaged `GameScore` singleton into managed Unity UI (uGUI) using a managed `SystemBase` running in `PresentationSystemGroup`, updating a screen-space Canvas score counter with minimal string allocations.
 * **In Scope:**
@@ -90,6 +89,19 @@ namespace Asteroids.Core
 }
 ```
 
+### Visual & Scene Rigging Contracts
+*(Defines how the managed UI is assembled in the Main Scene)*
+* **Target Scope**: `Scope 1: Main Scene` (`Assets/Scenes/Asteroids.unity`)
+* **Entity Visual Type**:
+  - [x] **Managed UI Companion (Hybrid Bridge)**:
+    - **Hierarchy Path**: `[Main Scene] -> UI Canvas -> ScoreText`
+    - **Canvas Configuration**: `Render Mode = Screen Space - Overlay`, `CanvasScaler` (`Scale With Screen Size`, `1920x1080`), `GraphicRaycaster`.
+    - **Text Component**: `TextMeshProUGUI` positioned at top-left anchor (`Pos X: 120, Pos Y: -60`, Font Size `36`).
+    - **Authoring Component**: `ScoreDisplayView` attached to `ScoreText` GameObject with serialized `_scoreText` wired to its own `TextMeshProUGUI` component.
+  - [ ] **Pure Data / Non-Visual Entity (Explicitly Empty)**:
+* **SubScene Bridge Dependency**:
+  - `ScoreUIBridgeSystem` queries the unmanaged `GameScore` singleton baked from `ScoreManager` in `Assets/Scenes/Asteroids_entities.unity`.
+
 ---
 
 ## Section 3: Injected OKF Patterns & Anti-Pattern Warnings
@@ -116,6 +128,7 @@ namespace Asteroids.Core
 - [x] **Dirty Checking**: Score text only updates when `CurrentScore` changes.
 - [x] **System Group**: Updates strictly within `PresentationSystemGroup`.
 - [x] **Null Safety**: Gracefully handles absence of `ScoreDisplayView` instance without throwing exceptions.
+- [ ] **Visual & Rigging Audit**: Verified `ScoreDisplayView` is attached to `ScoreText` under the Screen-Space Canvas in `Assets/Scenes/Asteroids.unity`.
 
 ---
 
@@ -123,3 +136,11 @@ namespace Asteroids.Core
 - [x] Step 1: Implement `ScoreDisplayView.cs` in `Assets/Scripts/Authoring/`.
 - [x] Step 2: Implement `ScoreUIBridgeSystem.cs` in `Assets/Scripts/Systems/`.
 - [x] Step 3: Verify clean compilation and 0 Burst warnings via `anklebreaker-unity-mcp`.
+
+---
+
+## Reviewer Sign-off & Verdict
+* **Review Date:** `YYYY-MM-DD`
+* **Verdict:** `PENDING`
+* **Findings:**
+  * [Notes or verification logs here]

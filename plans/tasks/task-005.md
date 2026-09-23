@@ -5,8 +5,7 @@
 **Reviewer:** Reviewer Persona  
 **Target Entities Version:** Unity Entities 1.4+ (Unity 6.6)  
 
----
-
+---\n
 ## Section 1: Objective & Scope
 * **Objective:** Implement the player-centric dynamic ring spawner with local density regulation, ensuring asteroids spawn strictly out of view (beyond the camera frustum at $[35\text{m}, 50\text{m}]$), maintain an ideal gameplay density band ($[8, 16]$ asteroids within a $70\text{m}$ engagement radius), adaptively pace spawn cadence, and never crowd the player.
 * **In Scope:**
@@ -251,6 +250,24 @@ namespace Asteroids.Core
 }
 ```
 
+### Visual & Scene Rigging Contracts
+*(Defines how the spawner entity is assembled in the SubScene)*
+* **Target Scope**: `SubScene` (`Assets/Scenes/Asteroids_entities.unity`)
+* **Entity Visual Type**:
+  - [ ] **Visual Entity (Prefab-Backed)**:
+  - [x] **Pure Data / Non-Visual Entity (Explicitly Empty)**:
+    - **Entity Name**: `AsteroidSpawner`
+    - **Entity Purpose**: Logical coordinator for density sampling and offscreen asteroid instantiation.
+    - **Mesh Requirement**: `None (Primitive Empty GameObject)`
+    - **Rationale**: `AsteroidSpawnerData`, `GlobalRandom`, and `AsteroidPrefabsConfig` are metadata components baked with `TransformUsageFlags.None`. All physical rendering belongs to spawned prefab entities.
+* **Component Wiring Details**:
+  - **GameObject**: `AsteroidSpawner` (in `Asteroids_entities.unity`)
+  - **Component**: `AsteroidSpawnerAuthoring`
+  - **Wiring References**:
+    - `LargeAsteroidPrefab` -> `Assets/ThirdParty/PolygonSciFiSpace/Prefabs/Environment/SM_Env_Asteroid_Rock_01.prefab`
+    - `MediumAsteroidPrefab` -> `Assets/ThirdParty/PolygonSciFiSpace/Prefabs/Environment/SM_Env_Asteroid_Rock_02.prefab`
+    - `SmallAsteroidPrefab` -> `Assets/ThirdParty/PolygonSciFiSpace/Prefabs/Environment/SM_Env_Asteroid_Rock_04.prefab`
+
 ---
 
 ## Section 3: Injected OKF Patterns & Anti-Pattern Warnings
@@ -281,6 +298,7 @@ namespace Asteroids.Core
 - [ ] **Density Guard**: Spawning halts when asteroid count reaches `TargetLocalDensityMax`.
 - [ ] **Burst Compliance**: `AsteroidSpawnSystem` is fully Burst-compiled (`[BurstCompile]`).
 - [ ] **Zero Popping**: Spawn positions are strictly beyond the camera frustum diagonal.
+- [ ] **Visual & Rigging Audit**: Verified `AsteroidSpawner` is a Primitive Empty GameObject wiring all 3 tier prefabs (`Rock_01`, `Rock_02`, `Rock_04`).
 
 ---
 
@@ -289,3 +307,11 @@ namespace Asteroids.Core
 - [x] Step 2: Implement `AsteroidSpawnSystem.cs` in `Assets/Scripts/Systems/`.
 - [x] Step 3: Implement `AsteroidSpawnerAuthoring.cs` in `Assets/Scripts/Authoring/`.
 - [x] Step 4: Verify clean compilation and 0 Burst warnings via `anklebreaker-unity-mcp`.
+
+---
+
+## Reviewer Sign-off & Verdict
+* **Review Date:** `YYYY-MM-DD`
+* **Verdict:** `PENDING`
+* **Findings:**
+  * [Notes or verification logs here]

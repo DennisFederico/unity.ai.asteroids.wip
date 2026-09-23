@@ -5,10 +5,9 @@
 **Reviewer:** Reviewer Persona  
 **Target Entities Version:** Unity Entities 1.4+ (Unity 6.6)  
 
----
-
+---\n
 ## Section 1: Objective & Scope
-* **Objective:** Establish the asteroid data schema, 3-axis rotational tumbling kinematics, linear drift on the $XZ$ plane ($Y=0$) through infinite space, and authoring baker for asteroid prefabs.
+* **Objective:** Establish the asteroid data schema, 3-axis rotational tumbling kinematics, linear drift on the $XZ$ plane ($Y=0$) through infinite space, and authoring baker for asteroid prefabs across all three size tiers.
 * **In Scope:**
   - Unmanaged components: `AsteroidTag`, `AsteroidData` (Tier, Radius, ScoreValue, SplitCount), and `DriftVelocity` (3D linear and angular velocity vectors).
   - Burst-compiled unmanaged `AsteroidDriftSystem` (`ISystem`) in `SimulationSystemGroup` translating positions and compounding 3-axis rotation.
@@ -136,6 +135,24 @@ namespace Asteroids.Core
 }
 ```
 
+### Visual & Scene Rigging Contracts
+*(Defines how the entity prefabs are authored and configured)*
+* **Target Scope**: Prefab Library (`Assets/ThirdParty/PolygonSciFiSpace/Prefabs/Environment/`)
+* **Entity Visual Type**:
+  - [x] **Visual Entity (Prefab-Backed)**:
+    - **Large Asteroid (Tier 3)**:
+      - **Visual Prefab Asset Path**: `Assets/ThirdParty/PolygonSciFiSpace/Prefabs/Environment/SM_Env_Asteroid_Rock_01.prefab`
+      - **Configured Values**: `Tier = 3`, `Radius = 2.2f`, `ScoreValue = 20`, `SplitCount = 2`
+    - **Medium Asteroid (Tier 2)**:
+      - **Visual Prefab Asset Path**: `Assets/ThirdParty/PolygonSciFiSpace/Prefabs/Environment/SM_Env_Asteroid_Rock_02.prefab`
+      - **Configured Values**: `Tier = 2`, `Radius = 1.1f`, `ScoreValue = 50`, `SplitCount = 2`
+    - **Small Asteroid (Tier 1)**:
+      - **Visual Prefab Asset Path**: `Assets/ThirdParty/PolygonSciFiSpace/Prefabs/Environment/SM_Env_Asteroid_Rock_04.prefab`
+      - **Configured Values**: `Tier = 1`, `Radius = 0.5f`, `ScoreValue = 100`, `SplitCount = 0`
+    - **Rigging Mode**: `Prefab Asset (Dynamic ECB Spawning & Splitting)`
+    - **Authoring Component**: `AsteroidAuthoring` attached to each prefab with `TransformUsageFlags.Dynamic`.
+  - [ ] **Pure Data / Non-Visual Entity (Explicitly Empty)**:
+
 ---
 
 ## Section 3: Injected OKF Patterns & Anti-Pattern Warnings
@@ -154,7 +171,7 @@ namespace Asteroids.Core
 
 ## Section 4: Developer Definition of Done (DoD)
 - [ ] Code implemented strictly within Section 2 target paths.
-- [ ] Asteroid authoring attaches `AsteroidTag`, `AsteroidData`, and `DriftVelocity`.
+- [ ] `AsteroidAuthoring` configured on all three size tier prefabs (`Rock_01`, `Rock_02`, `Rock_04`).
 - [ ] Clean compilation verified via Unity MCP (`unity_get_compilation_errors` = **0 errors**).
 - [ ] Zero Burst compiler warnings.
 
@@ -164,6 +181,7 @@ namespace Asteroids.Core
 - [ ] **Burst Compilation**: `AsteroidDriftSystem` is marked with `[BurstCompile]`.
 - [ ] **Zero Garbage**: No heap allocations inside the drift query loop.
 - [ ] **Data Locality**: `DriftVelocity` is isolated from `AsteroidData`.
+- [ ] **Visual & Rigging Audit**: Verified all 3 Asteroid Prefabs have `AsteroidAuthoring` attached and bake `TransformUsageFlags.Dynamic`.
 
 ---
 
@@ -172,3 +190,11 @@ namespace Asteroids.Core
 - [ ] Step 2: Implement `AsteroidDriftSystem.cs` in `Assets/Scripts/Systems/`.
 - [ ] Step 3: Implement `AsteroidAuthoring.cs` in `Assets/Scripts/Authoring/`.
 - [ ] Step 4: Verify clean compilation and 0 Burst warnings via `anklebreaker-unity-mcp`.
+
+---
+
+## Reviewer Sign-off & Verdict
+* **Review Date:** `YYYY-MM-DD`
+* **Verdict:** `PENDING`
+* **Findings:**
+  * [Notes or verification logs here]

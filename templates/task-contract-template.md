@@ -51,6 +51,20 @@ namespace Game.Core
 }
 ```
 
+### Visual & Scene Rigging Contracts
+*(Defines how the entity is assembled in the SubScene. Must specify a visual prefab OR explicitly designate as Pure Data).*
+* **Target Scope**: `SubScene` (`Assets/Scenes/[SceneName]_entities.unity`)
+* **Entity Visual Type**: 
+  One of the following:
+  - **Visual Entity (Prefab-Backed)**:
+    - **Visual Prefab Asset Path**: `Assets/Prefabs/[EntityPrefab].prefab`
+    - **Rigging Mode**: `Prefab Instance (Root)` | `Child Visual Prefab`
+    - **Initial Transform**: Position `([X], [Y], [Z])`, Rotation `([X], [Y], [Z])`, Scale `(1, 1, 1)`
+  - **Pure Data / Non-Visual Entity (Explicitly Empty)**:
+    - **Entity Purpose**: [e.g., Spawner / Singleton / Config / Manager / Hybrid Bridge]
+    - **Mesh Requirement**: `None (Primitive Empty GameObject)`
+    - **Rationale**: [Explain why no mesh/render component is attached]
+
 ---
 
 ## Section 3: Injected OKF Patterns & Anti-Pattern Warnings
@@ -87,6 +101,7 @@ The Reviewer executes these checks before approving handoff:
 - [ ] **Static Audit**: All unmanaged systems and jobs decorated with `[BurstCompile]`.
 - [ ] **Allocation Audit**: Zero GC allocations observed during profiling.
 - [ ] **ECB Lifecycle Audit**: Zero calls to `.Playback()` or `.Dispose()` on system-managed command buffers.
+- [ ] **Visual & Rigging Audit**: If the entity represents a visible in-game object (character, vehicle, obstacle, projectile), verify that a valid visual prefab is assigned; if the entity is non-visual (spawner, singleton), verify that it is explicitly marked as Pure Data with rationale.
 - [ ] **Test Plan**: Automated headless tests (`Assets/Tests/`) executed with clean assertions, or PlayMode sanity confirmed.
 - [ ] **Zero-Error Gate**: No active compiler, runtime, or test errors.
 
