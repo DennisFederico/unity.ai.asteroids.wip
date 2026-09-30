@@ -119,6 +119,59 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &472252724
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 472252726}
+  - component: {fileID: 472252725}
+  m_Layer: 0
+  m_Name: AsteroidSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &472252725
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 472252724}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e90ff70a6af3144c3aa6aa266bd4905c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Asteroids.Core.AsteroidSpawnerAuthoring
+  LargeAsteroidPrefab: {fileID: 1939861799578592741, guid: c06bd7fd65ae7488e8e16a116a9eb629, type: 3}
+  MediumAsteroidPrefab: {fileID: 8450878152984607557, guid: f8704cf10ec9a419bbb36240dbe4c323, type: 3}
+  SmallAsteroidPrefab: {fileID: 6772220508918975384, guid: e7a0f8e915b484f4cb36729bf5825bda, type: 3}
+  DensityRadius: 70
+  TargetLocalDensityMin: 8
+  TargetLocalDensityMax: 16
+  BaseSpawnInterval: 2.5
+  FastSpawnInterval: 0.8
+  Seed: 1337
+--- !u!4 &472252726
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 472252724}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1307762318
 GameObject:
   m_ObjectHideFlags: 0
@@ -229,3 +282,4 @@ SceneRoots:
   m_Roots:
   - {fileID: 4569834487179500858}
   - {fileID: 1307762320}
+  - {fileID: 472252726}
