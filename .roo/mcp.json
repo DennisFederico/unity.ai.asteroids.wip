@@ -72,7 +72,8 @@
 				"unity_asset_create_prefab",
 				"unity_console_log",
 				"unity_search_by_component",
-				"unity_search_by_name"
+				"unity_search_by_name",
+				"unity_selection_find_by_type"
 			]
 		},
 		"context7": {
@@ -111,4 +112,3 @@
 		}
 	}
 }
-
