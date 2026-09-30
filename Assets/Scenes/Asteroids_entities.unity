@@ -247,12 +247,12 @@ MonoBehaviour:
   MaxSpeed: 12
   Drag: 2
   RotationDamping: 18
-  LaserPrefab: {fileID: 0}
+  LaserPrefab: {fileID: 1981240121600294, guid: b5b28bfa5c3fef44caaac12b6aca9ec4, type: 3}
   FireRate: 5
   MuzzleOffset:
     x: 0
     y: 0
-    z: 0.5
+    z: 6.72
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

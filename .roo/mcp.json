@@ -73,7 +73,9 @@
 				"unity_console_log",
 				"unity_search_by_component",
 				"unity_search_by_name",
-				"unity_selection_find_by_type"
+				"unity_selection_find_by_type",
+				"unity_screenshot_game",
+				"unity_screenshot_scene"
 			]
 		},
 		"context7": {
